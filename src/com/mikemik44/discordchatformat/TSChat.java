@@ -1,5 +1,6 @@
 package com.mikemik44.discordchatformat;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,71 +22,124 @@ public class TSChat extends JavaPlugin implements Listener {
 		return "";
 	}
 
+	private static String finds(String msg, String symbolS) {
+		if (msg.length() < symbolS.length()) {
+			return "";
+		}
+		for (int i = 0; i < symbolS.length(); i++) {
+			if (msg.charAt(i) != symbolS.charAt(i)) {
+				return "";
+			}
+		}
+		return symbolS;
+	}
+
+	private static String doit(String pattern, String endPattern, String msg) {
+		String text = "";
+		if (!finds(msg, pattern).isEmpty()) {
+//			msg = msg.replace(pattern, "");
+			for (int i = pattern.length(); i < msg.length(); i++) {
+				if (!finds(msg.substring(i), endPattern).isEmpty()) {
+					return msg.substring(pattern.length(), i);
+				}
+			}
+		}
+		return "";
+	}
+
 	public static String convert(Player p, String msg) {
-		String pat = "__\\*\\*\\*[^\\*\\*\\*__]*\\*\\*\\*__";
-		String t = getPattern(pat, msg);
-		while (!t.isEmpty()) {
-			msg = msg.replaceFirst(t.replace("*", "\\*"), "§n§l§o" + t.substring(5, t.length() - 5) + "§r");
-			t = getPattern(pat, msg);
-		}
-		pat = "__\\*\\*[^\\*\\*__]*\\*\\*__";
-		t = getPattern(pat, msg);
-		while (!t.isEmpty()) {
-			msg = msg.replaceFirst(t.replace("*", "\\*"), "§n§l" + t.substring(4, t.length() - 4) + "§r");
-			t = getPattern(pat, msg);
-
-		}
-		pat = "__\\*[^\\*_]*\\*__";
-		t = getPattern(pat, msg);
-		while (!t.isEmpty()) {
-			msg = msg.replaceFirst(t.replace("*", "\\*"), "§n§o" + t.substring(3, t.length() - 3) + "§r");
-			t = getPattern(pat, msg);
-
-		}
-		pat = "\\|\\|[^\\|\\|]*\\|\\|";
-		t = getPattern(pat, msg);
-		while (!t.isEmpty()) {
-			msg = msg.replaceFirst(t.replace("|", "\\|"), "§k" + t.substring(2, t.length() - 2) + "§r");
-			t = getPattern(pat, msg);
-
-		}
-		pat = "~~[^~~]*~~";
-		t = getPattern(pat, msg);
-		while (!t.isEmpty()) {
-			msg = msg.replaceFirst(t, "§m" + t.substring(2, t.length() - 2) + "§r");
-			t = getPattern(pat, msg);
-
-		}
-		pat = "\\*\\*\\*[^\\*\\*\\*]*\\*\\*\\*";
-		t = getPattern(pat, msg);
-		while (!t.isEmpty()) {
-			msg = msg.replaceFirst(t.replace("*", "\\*"), "§l§o" + t.substring(3, t.length() - 3) + "§r");
-			t = getPattern(pat, msg);
-
-		}
-		pat = "\\*\\*[^\\*\\*]*\\*\\*";
-		t = getPattern(pat, msg);
-		while (!t.isEmpty()) {
-			msg = msg.replaceFirst(t.replace("*", "\\*"), "§l" + t.substring(2, t.length() - 2) + "§r");
-			t = getPattern(pat, msg);
-
-		}
-
-		pat = "\\*[^\\*]*\\*";
-		t = getPattern(pat, msg);
-		while (!t.isEmpty()) {
-			msg = msg.replaceFirst(t.replace("*", "\\*"), "§o" + t.substring(1, t.length() - 1) + "§r");
-			t = getPattern(pat, msg);
-
-		}
-		pat = "_[^_]*_";
-		t = getPattern(pat, msg);
-		while (!t.isEmpty()) {
-			msg = msg.replaceFirst(t.replace("*", "\\*"), "§n" + t.substring(1, t.length() - 1) + "§r");
-			t = getPattern(pat, msg);
-
+		int i = 0;
+		String lsym = "";
+		while (i < msg.length()) {
+			
+			String te = doit("__", "__", msg.substring(i));
+			if (!te.isEmpty()) {
+				msg = msg.replace("__" + te + "__", convert(p,lsym + "§n",te) + "§r");
+				continue;
+			}
+			te = doit("***", "***", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("***" + te + "***", convert(p, lsym +"§l§o",te) + "§r");
+				continue;
+			}
+			te = doit("**", "**", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("**" + te + "**", convert(p, lsym +"§l",te) + "§r");
+				continue;
+			}
+			te = doit("*", "*", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("*" + te + "*", convert(p,lsym +"§o",te) + "§r");
+				continue;
+			}
+			te = doit("||", "||", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("||" + te + "||", convert(p, lsym +"§k",te) + "§r");
+				continue;
+			}
+			te = doit("~~", "~~", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("~~" + te + "~~", convert(p,lsym +"§m", te)  + "§r");
+				continue;
+			}
+			i++;
 		}
 		return msg;
+	}
+
+	public static String convert(Player p, String prevSigns, String msg) {
+		int i = 0;
+		String lsym = prevSigns;
+		while (i < msg.length()) {
+			
+			String te = doit("__", "__", msg.substring(i));
+			if (!te.isEmpty()) {
+				msg = msg.replace("__" + te + "__", convert(p,lsym + "§n",te) + "§r");
+				continue;
+			}
+			te = doit("***", "***", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("***" + te + "***", convert(p, lsym +"§l§o",te) + "§r");
+				continue;
+			}
+			
+			te = doit("**", "**", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("**" + te + "**", convert(p, lsym +"§l",te) + "§r");
+				continue;
+			}
+			te = doit("*", "*", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("*" + te + "*", convert(p,lsym +"§o",te) + "§r");
+				continue;
+			}
+			te = doit("||", "||", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("||" + te + "||", convert(p, lsym +"§k",te) + "§r");
+				continue;
+			}
+			te = doit("~~", "~~", msg.substring(i));
+			if (te.isEmpty()) {
+			} else {
+				msg = msg.replace("~~" + te + "~~", convert(p,lsym +"§m", te)  + "§r");
+				continue;
+			}
+			i++;
+		}
+		return lsym + msg;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(convert(null, "__wow__"));
 	}
 
 	@Override
