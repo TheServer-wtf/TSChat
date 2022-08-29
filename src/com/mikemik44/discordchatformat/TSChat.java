@@ -22,48 +22,48 @@ public class TSChat extends JavaPlugin implements Listener {
 	}
 
 	public static String convert(Player p, String msg) {
-		String pat = "__\\*\\*\\*.*\\*\\*\\*__";
+		String pat = "__\\*\\*\\*[^\\*\\*\\*__]*\\*\\*\\*__";
 		String t = getPattern(pat, msg);
 		while (!t.isEmpty()) {
 			msg = msg.replaceFirst(t.replace("*", "\\*"), "§n§l§o" + t.substring(5, t.length() - 5) + "§r");
 			t = getPattern(pat, msg);
 		}
-		pat = "__\\*\\*.*\\*\\*__";
+		pat = "__\\*\\*[^\\*\\*__]*\\*\\*__";
 		t = getPattern(pat, msg);
 		while (!t.isEmpty()) {
 			msg = msg.replaceFirst(t.replace("*", "\\*"), "§n§l" + t.substring(4, t.length() - 4) + "§r");
 			t = getPattern(pat, msg);
 
 		}
-		pat = "__\\*.*\\*__";
+		pat = "__\\*[^\\*_]*\\*__";
 		t = getPattern(pat, msg);
 		while (!t.isEmpty()) {
 			msg = msg.replaceFirst(t.replace("*", "\\*"), "§n§o" + t.substring(3, t.length() - 3) + "§r");
 			t = getPattern(pat, msg);
 
 		}
-		pat = "\\|\\|.*\\|\\|";
+		pat = "\\|\\|[^\\|\\|]*\\|\\|";
 		t = getPattern(pat, msg);
 		while (!t.isEmpty()) {
 			msg = msg.replaceFirst(t.replace("|", "\\|"), "§k" + t.substring(2, t.length() - 2) + "§r");
 			t = getPattern(pat, msg);
 
 		}
-		pat = "~~.*~~";
+		pat = "~~[^~~]*~~";
 		t = getPattern(pat, msg);
 		while (!t.isEmpty()) {
 			msg = msg.replaceFirst(t, "§m" + t.substring(2, t.length() - 2) + "§r");
 			t = getPattern(pat, msg);
 
 		}
-		pat = "\\*\\*\\*.*\\*\\*\\*";
+		pat = "\\*\\*\\*[^\\*\\*\\*]*\\*\\*\\*";
 		t = getPattern(pat, msg);
 		while (!t.isEmpty()) {
 			msg = msg.replaceFirst(t.replace("*", "\\*"), "§l§o" + t.substring(3, t.length() - 3) + "§r");
 			t = getPattern(pat, msg);
 
 		}
-		pat = "\\*\\*.*\\*\\*";
+		pat = "\\*\\*[^\\*\\*]*\\*\\*";
 		t = getPattern(pat, msg);
 		while (!t.isEmpty()) {
 			msg = msg.replaceFirst(t.replace("*", "\\*"), "§l" + t.substring(2, t.length() - 2) + "§r");
@@ -71,14 +71,14 @@ public class TSChat extends JavaPlugin implements Listener {
 
 		}
 
-		pat = "\\*.*\\*";
+		pat = "\\*[^\\*]*\\*";
 		t = getPattern(pat, msg);
 		while (!t.isEmpty()) {
 			msg = msg.replaceFirst(t.replace("*", "\\*"), "§o" + t.substring(1, t.length() - 1) + "§r");
 			t = getPattern(pat, msg);
 
 		}
-		pat = "_.*_";
+		pat = "_[^_]*_";
 		t = getPattern(pat, msg);
 		while (!t.isEmpty()) {
 			msg = msg.replaceFirst(t.replace("*", "\\*"), "§n" + t.substring(1, t.length() - 1) + "§r");
